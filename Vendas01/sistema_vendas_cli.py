@@ -24,11 +24,13 @@ class SistemaVendasCLI:
                 user=DB_CONFIG['user'],
                 password=DB_CONFIG['password'],
                 database=DB_CONFIG['database']
+
             )
             
             print("Conectando ao banco PostgreSQL...")
             #self.conexao = psycopg2.connect(**pg_config)
             self.conexao.autocommit = True
+
             print("Conexão estabelecida com sucesso!")
             return True
         except psycopg2.Error as e:
