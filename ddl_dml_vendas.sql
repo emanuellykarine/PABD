@@ -193,17 +193,28 @@ JOIN itens_pedido i ON p.id_pedido = i.id_pedido
 GROUP BY u.id_usuario;
 
 -- Relatório Mensal de Vendas
-
+SELECT 
+	EXTRACT(YEAR FROM p.data_pedido) as ano,
+	EXTRACT(MONTH FROM p.data_pedido) as mes,
+	COUNT(DISTINCT p.id_pedido) as quantidade_pedidos,
+	COUNT(DISTINCT ip.id_produto) as produtos_diferentes,
+	ROUND(SUM(p.valor_total), 2) as faturamento_total
+FROM pedido p
+INNER JOIN itens_pedido ip ON p.id_pedido = ip.id_pedido
+WHERE p.status_pedido != 'cancelado'
+GROUP BY EXTRACT(YEAR FROM p.data_pedido), EXTRACT(MONTH FROM p.data_pedido)
+ORDER BY ano DESC, mes DESC;
+		
 -- Produtos que Nunca Foram Vendidos
 SELECT p.nome
 FROM produto p
 LEFT JOIN itens_pedido i ON p.id_produto = i.id_produto
-WHERE p.ativo = True and i.id_item is null; 
+WHERE p.ativo = True and i.id_produto is null; 
 
 -- Análise de Ticket Médio por Categoria
-SELECT p.categoria, avg(pe.valor_total) as valor_medio
+SELECT p.categoria, avg(i.subtotal) as valor_medio
 FROM produto p
 JOIN itens_pedido i ON p.id_produto = i.id_produto
 JOIN pedido pe ON i.id_pedido = pe.id_pedido
-WHERE pe.status_pedido <> 'cancelado'
+WHERE pe.status_pedido != 'cancelado'
 GROUP BY p.categoria;
