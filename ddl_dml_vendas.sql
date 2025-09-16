@@ -65,7 +65,6 @@ CREATE TABLE pedido (
     data_entrega_prevista DATE,
     data_entrega_real DATE,
     
-    -- Chave estrangeira
     CONSTRAINT fk_pedido_usuario FOREIGN KEY (id_usuario) 
         REFERENCES usuario(id_usuario) ON DELETE RESTRICT
 );
@@ -119,6 +118,92 @@ INSERT INTO itens_pedido (id_pedido, id_produto, quantidade, preco_unitario) VAL
 (2, 3, 1, 350.00),   -- Maria comprou 1 Tênis
 (3, 4, 3, 89.90);    -- João comprou 3 Livros
 
-SELECT (id, nome, email, telefone) 
+-- Listagem de Usuários Ativos
+SELECT (id_usuario, nome, email, telefone) 
 FROM usuario
 WHERE ativo = True;
+
+-- Catálogo de Produtos por Categoria
+SELECT (nome, preco, quantidade_estoque)
+FROM produto
+WHERE categoria = 'Informática'
+ORDER BY preco ASC;
+
+-- Contagem de Pedidos por Status
+SELECT status_pedido, COUNT (*) as total_pedidos
+FROM pedido
+GROUP BY status_pedido ORDER BY total_pedidos DESC;
+
+--  Alerta de Estoque Baixo
+SELECT (nome, quantidade_estoque, categoria)
+FROM produto 
+WHERE quantidade_estoque < 30;
+
+-- Histórico de Pedidos Recentes
+SELECT (id_pedido, data_pedido, valor_total, status_pedido)
+FROM pedido
+WHERE data_pedido >= current_date - interval '60 days';
+
+-- Produtos Mais Caros por Categoria
+SELECT (p.categoria, p.nome, p.preco) 
+FROM produto p 
+WHERE p.preco = (
+	select max(p2.preco)
+	from produto p2
+	where p2.categoria = p.categoria
+);
+
+-- Clientes com Dados de Contato Incompletos
+SELECT (id_usuario, nome) 
+FROM usuario 
+where ativo = True and telefone = Null;
+
+-- Pedidos Pendentes de Entrega
+SELECT (u.nome, u.endereco)
+FROM usuario u
+JOIN pedido p ON  u.id_usuario = p.id_usuario
+WHERE p.status_pedido = 'enviado';
+
+-- Detalhamento Completo de Pedidos
+SELECT u.nome, u.email, p.nome as produto_nome, i.quantidade, i.preco_unitario, i.subtotal
+FROM pedido pe
+JOIN usuario u ON u.id_usuario = pe.id_usuario
+JOIN itens_pedido i ON pe.id_pedido = i.id_pedido
+JOIN produto p ON p.id_produto = i.id_produto
+WHERE pe.id_pedido = 1;
+
+-- Ranking dos Produtos Mais Vendidos
+SELECT p.nome, p.categoria, sum(i.subtotal) as total_vendido
+FROM pedido pe
+JOIN itens_pedido i ON i.id_pedido = pe.id_pedido
+JOIN produto p ON p.id_produto = i.id_produto
+GROUP BY p.nome, p.categoria; 
+
+-- Análise de Clientes Sem Compras
+SELECT u.nome 
+FROM usuario u
+LEFT JOIN pedido p ON u.id_usuario = p.id_usuario
+WHERE u.ativo = True and p.id_usuario is null;
+
+-- Estatísticas de Compras por Cliente
+SELECT u.id_usuario, count(p.id_pedido) as total_pedidos, sum(i.subtotal) as valor_total, avg(i.subtotal) as valor_medio
+FROM pedido p
+JOIN usuario u ON p.id_usuario = u.id_usuario
+JOIN itens_pedido i ON p.id_pedido = i.id_pedido
+GROUP BY u.id_usuario;
+
+-- Relatório Mensal de Vendas
+
+-- Produtos que Nunca Foram Vendidos
+SELECT p.nome
+FROM produto p
+LEFT JOIN itens_pedido i ON p.id_produto = i.id_produto
+WHERE p.ativo = True and i.id_item is null; 
+
+-- Análise de Ticket Médio por Categoria
+SELECT p.categoria, avg(pe.valor_total) as valor_medio
+FROM produto p
+JOIN itens_pedido i ON p.id_produto = i.id_produto
+JOIN pedido pe ON i.id_pedido = pe.id_pedido
+WHERE pe.status_pedido <> 'cancelado'
+GROUP BY p.categoria;
