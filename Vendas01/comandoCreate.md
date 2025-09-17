@@ -6,4 +6,8 @@ CREATE DATABASE sistema_vendas
     TEMPLATE template0;
 
 - Primeiro baixa a extensão do postgres conecta no banco postgres e executa essa query de cima e depois conecta no banco sistema_venda.
-- Cria a query dentro do sistema_venda e coloca os comando sql lá dentro e depois é só rodar.
+- Cria a query dentro do sistema_venda e coloca os comando sql Slá dentro e depois é só rodar.
+
+- WHERE
+- GROUP BY
+- ORDER BY
