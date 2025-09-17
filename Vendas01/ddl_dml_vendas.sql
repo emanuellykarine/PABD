@@ -1,3 +1,4 @@
+-- Active: 1758112412026@@localhost@5432@sistema_vendas
 -- Remover tabelas se já existirem (ordem inversa das dependências)
 DROP TABLE IF EXISTS itens_pedido CASCADE;
 DROP TABLE IF EXISTS pedido CASCADE;
@@ -79,13 +80,11 @@ CREATE TABLE itens_pedido (
     quantidade INTEGER NOT NULL CHECK (quantidade > 0),
     preco_unitario DECIMAL(10,2) NOT NULL CHECK (preco_unitario >= 0),
     subtotal DECIMAL(12,2) GENERATED ALWAYS AS (quantidade * preco_unitario) STORED,
-    
     -- Chaves estrangeiras
     CONSTRAINT fk_itens_pedido FOREIGN KEY (id_pedido) 
         REFERENCES pedido(id_pedido) ON DELETE CASCADE,
     CONSTRAINT fk_itens_produto FOREIGN KEY (id_produto) 
         REFERENCES produto(id_produto) ON DELETE RESTRICT,
-    
     -- Índice único para evitar duplicação de produto no mesmo pedido
     CONSTRAINT unique_pedido_produto UNIQUE (id_pedido, id_produto)
 );
