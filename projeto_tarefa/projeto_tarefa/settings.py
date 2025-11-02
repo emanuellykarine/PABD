@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'projeto',
-    'drf_yasg',
 ]
 
 REST_FRAMEWORK = {
@@ -141,3 +140,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Configurar modelo de usuário customizado
+AUTH_USER_MODEL = 'projeto.Usuario'
