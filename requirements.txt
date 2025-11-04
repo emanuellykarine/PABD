@@ -5,3 +5,6 @@ psycopg2-binary
 requests
 drf_yasg
 djangorestframework_simplejwt
+requests
+django-filter
+Pillow
