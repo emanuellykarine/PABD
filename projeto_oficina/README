@@ -1,0 +1,7 @@
+npm create vite@latest front-autenticacao -- --template react
+
+cd front-autenticacao
+
+npm install
+
+npm run dev

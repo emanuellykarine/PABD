@@ -1,0 +1,38 @@
+### Cadastro de novo usuário
+POST http://localhost:8000/auth/registro/
+Content-Type: application/json
+
+{
+    "username": "placido1",
+    "email": "placido1@gmail.com",
+    "cpf": "12345678945",
+    "telefone": "11987654321",
+    "tipo_perfil": "MECANICO",
+    "senha": "placido1",
+    "confirmar_senha": "placido1"
+}
+
+###
+
+### Login do usuário
+POST http://localhost:8000/auth/login/
+Content-Type: application/json
+
+{
+    "username": "placido1",
+    "password": "placido1"
+}
+
+###
+
+### Logout do usuário
+POST http://localhost:8000/auth/logout/
+Content-Type: application/json
+Authorization: Token 6cbe019ab759102f4832456c9a2e539bbc23a6c9
+
+###
+
+### Obter perfil do usuário
+GET http://localhost:8000/auth/perfil/
+Content-Type: application/json
+Authorization: Token 6cbe019ab759102f4832456c9a2e539bbc23a6c9
